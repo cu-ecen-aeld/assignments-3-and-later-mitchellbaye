@@ -4,7 +4,7 @@ IDIR =../include
 CC=$(CROSS_COMPILE)gcc
 CFLAGS=-I$(IDIR)
 
-ODIR=obj
+ODIR=
 LDIR =../lib
 
 LIBS=-lm
@@ -13,7 +13,7 @@ _DEPS = writer.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 _OBJ = writer.o
-OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+OBJ = $(_OBJ)
 
 $(ODIR)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
