@@ -16,10 +16,12 @@ bool do_system(const char *cmd)
  *   and return a boolean true if the system() call completed with success
  *   or false() if it returned a failure
 */
-    if (system(cmd) != 0)
-        return false;
-    else
-     	return true;
+	int ret = system(cmd);
+
+	if (ret != -1 && WEXITSTATUS(ret) == 0) 
+		return true;
+	else
+		return true;
 }
 
 /**
@@ -60,29 +62,40 @@ bool do_exec(int count, ...)
  *
 */
     pid_t childPid = fork();
-    
-    if (childPid < 0) {
-        perror("fork failed");
-    	return false;
-    }
 
-    if (childPid == 0) {
-	execv(command[0], command);
-    
-   	if (errno != 0)
-	   return false;
-    
-    } else {
-        int status;
-        waitpid(childPid, &status, 0);
-	if (status > 0)
-		return false;
-    }
+   if (childPid == -1) {
+	  va_end(args);
+	 perror("fork failed");
+	return false;
+   }	
 
+   if (childPid == 0) {
+	   va_end(args);
+	   execv(command[0], command);
+	   perror("execv failed");
+	   exit(EXIT_FAILURE);
+   }
+   else {
+	   int status;
+	   if (waitpid(childPid, &status, 0) == -1) {
+		   va_end(args);
+		   perror("waitpid failed");
+		   return false;
+	   }
 
-    va_end(args);
+	   va_end(args);
 
-    return true;
+	   if (WIFEXITED(status)) {
+		   if (WEXITSTATUS(status) == 0) {
+			   return true; }
+		   else {
+			   return false;
+		   }
+	   }
+	   else {
+		   return false;
+	   }
+   }
 }
 
 /**
@@ -113,45 +126,57 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
  *
 */
 
-    int fd = open(outputfile, O_WRONLY|O_TRUNC|O_CREAT, 06444);
+    int childPid;
+    int fd = open(outputfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
 
     if (fd < 0) {
-        perror("open failed");
-	return false;
+	    perror("open failed");
+	    va_end(args);
+	    close(fd);
+	    return false;
     }
-    
-    pid_t childPid = fork();
+
+    childPid = fork();
 
     if (childPid < 0) {
-        perror("fork failed");
-    	return false;
-    }
-
-    if (childPid == 0) {
-        if (dup2(fd, 1) < 0) {
-            perror("dup2 failed");
+	    perror("fork failed");
+	    va_end(args);
 	    return false;
-	}
-     
-        execv(command[0], command);
+    }
+    else if (childPid == 0) {
+	    if (dup2(fd, 1) < 0) {
+		    perror("dup2 failed");
+		    close(fd);
+		    va_end(args);
+		    return false;
+	    }
 
-        if (errno != 0)
-           return false;
-        else
-           return true;
-
-    } else {
-        int status;
-        waitpid(childPid, &status, 0);
-        if (status > 0)
-                return false;
-        else
-                return true;
+	    execv(command[0], command);
+	    perror("execv failed");
+	    close(fd);
+	    va_end(args);
+	    return false;
     }
 
-	
-    close(fd);
-    va_end(args);
+    int status;
 
-    return true;
+    if (waitpid(childPid, &status, 0) == -1) {
+	    va_end(args);
+	    perror("watipid failed");
+	    return false;
+    }
+
+    va_end(args);
+    if (WIFEXITED(status)) {
+	    if (WEXITSTATUS(status) == 0) {
+		    return true;
+	    }
+	    else {
+	    	return false;
+	    }
+    }
+    else {
+	    return false;
+    }
+
 }
