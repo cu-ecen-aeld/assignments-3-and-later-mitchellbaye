@@ -7,7 +7,7 @@
  * It should be returned by your thread so it can be freed by
  * the joiner thread.
  */
-struct threadData{
+struct thread_data{
     pthread_mutex_t *sMutex;
     int             sWaitToObtainMs;
     int             sWaitToReleaseMS;
@@ -29,4 +29,4 @@ struct threadData{
 * coresponding to the thread which was started.
 * @return true if the thread could be started, false if a failure occurred.
 */
-bool startThreadObtainingMutex(pthread_t *thread, pthread_mutex_t *mutex,int waitToObtainMs, int waitToReleaseMs);
+bool start_threa_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int wait_to_obtain_ms, int wait_to_release_ms);

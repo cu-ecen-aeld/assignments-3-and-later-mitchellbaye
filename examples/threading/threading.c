@@ -8,14 +8,14 @@
 //#define DEBUG_LOG(msg,...) printf("threading: " msg "\n" , ##__VA_ARGS__)
 #define ERROR_LOG(msg,...) printf("threading ERROR: " msg "\n" , ##__VA_ARGS__)
 
-void* threadfunc(void* threadParam)
+void* threadfunc(void* thread_pram)
 {
 
     // TODO: wait, obtain mutex, wait, release mutex as described by thread_data structure
     // hint: use a cast like the one below to obtain thread arguments from your parameter
     //struct thread_data* thread_func_args = (struct thread_data *) thread_param;
     
-    struct threadData* threadFuncArgs = (struct threadData*) threadParam;
+    struct threadData* threadFuncArgs = (struct threadData*) thread_param;
 
     usleep(threadFuncArgs->sWaitToObtainMs * 1000);
 
@@ -38,11 +38,11 @@ void* threadfunc(void* threadParam)
         threadFuncArgs->sThreadCompleteSuccess = true;
 
 
-    return threadParam;
+    return thread_param;
 }
 
 
-bool startThreadObtainingMutex(pthread_t *thread, pthread_mutex_t *mutex,int waitToObtainMs, int waitToReleaseMs)
+bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int wait_to_obtain_ms, int wait_to_release_ms)
 {
     /**
      * TODO: allocate memory for thread_data, setup mutex and wait arguments, pass thread_data to created thread
@@ -53,7 +53,7 @@ bool startThreadObtainingMutex(pthread_t *thread, pthread_mutex_t *mutex,int wai
      * See implementation details in threading.h file comment block
      */
 
-    struct threadData* threadParam = (struct threadData*)malloc(sizeof(struct threadData));
+    struct thread_data* threadParam = (struct thread_data*)malloc(sizeof(struct threadData));
 
     threadParam->sMutex = mutex;
     threadParam->sWaitToObtainMs = wait_to_obtain_ms;
