@@ -59,7 +59,7 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
     thread_param->wait_to_obtain_ms = wait_to_obtain_ms;
     thread_param->wait_to_release_ms = wait_to_release_ms;
 
-    if ret = pthread_create(thread, NULL, threadfunc, thread_param);
+    int ret = pthread_create(thread, NULL, threadfunc, thread_param);
     if (ret != 0)
         ERROR_LOG("Thread Creation Failed: %d\n", ret);
 
