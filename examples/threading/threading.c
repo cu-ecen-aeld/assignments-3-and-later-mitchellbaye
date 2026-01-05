@@ -8,7 +8,7 @@
 //#define DEBUG_LOG(msg,...) printf("threading: " msg "\n" , ##__VA_ARGS__)
 #define ERROR_LOG(msg,...) printf("threading ERROR: " msg "\n" , ##__VA_ARGS__)
 
-void* threadfunc(void* thread_pram)
+void* threadfunc(void* thread_param)
 {
 
     // TODO: wait, obtain mutex, wait, release mutex as described by thread_data structure
@@ -53,13 +53,13 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
      * See implementation details in threading.h file comment block
      */
 
-    struct thread_data* threadParam = (struct thread_data*)malloc(sizeof(struct thread_data));
+    struct thread_data* thread_param = (struct thread_data*)malloc(sizeof(struct thread_data));
 
-    threadParam->mutex = mutex;
-    threadParam->wait_to_obtain_ms = wait_to_obtain_ms;
-    threadParam->wait_to_release_ms = wait_to_release_ms;
+    thread_param->mutex = mutex;
+    thread_param->wait_to_obtain_ms = wait_to_obtain_ms;
+    thread_param->wait_to_release_ms = wait_to_release_ms;
 
-    if ret = pthread_create(thread, NULL, threadFunc, threadParam);
+    if ret = pthread_create(thread, NULL, threadfunc, thread_param);
     if (ret != 0)
         ERROR_LOG("Thread Creation Failed: %d\n", ret);
 
