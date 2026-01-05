@@ -9,9 +9,9 @@
  */
 struct thread_data{
     pthread_mutex_t *sMutex;
-    int             sWaitToObtainMs;
-    int             sWaitToReleaseMS;
-    bool            sThreadCompleteSuccess;
+    int             wait_to_obtain_ms;
+    int             wait_to_release_ms;
+    bool            thread_complete_success;
 };
 
 

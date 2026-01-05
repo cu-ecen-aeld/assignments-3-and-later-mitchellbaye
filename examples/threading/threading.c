@@ -15,27 +15,27 @@ void* threadfunc(void* thread_pram)
     // hint: use a cast like the one below to obtain thread arguments from your parameter
     //struct thread_data* thread_func_args = (struct thread_data *) thread_param;
     
-    struct threadData* threadFuncArgs = (struct threadData*) thread_param;
+    struct thread_data* threadFuncArgs = (struct thread_data*) thread_param;
 
-    usleep(threadFuncArgs->sWaitToObtainMs * 1000);
+    usleep(threadFuncArgs->wait_to_obtain_ms * 1000);
 
-    int ret = pthread_mutex_lock(threadFuncArgs->sMutex);
+    int ret = pthread_mutex_lock(threadFuncArgs->mutex);
     if (ret != 0)
     {
         ERROR_LOG("Mutex Lock Failed: %d", ret);
-        threadFuncArgs->sThreadCompleteSuccess = false;
+        threadFuncArgs->thread_complete_success = false;
     }
     else
-        usleep(threadFuncArgs->sWaitToReleaseMs * 1000);
+        usleep(threadFuncArgs->wait_to_release_ms * 1000);
 
-    ret = pthread_mutex_unlock(threadFuncArgs->sMutex);
+    ret = pthread_mutex_unlock(threadFuncArgs->mutex);
     if (ret != 0)
     {
         ERROR_LOG("Mutex Unlock Failed: %d\n", ret);
-        threadFuncArgs->sThreadCompleteSuccess = false;
+        threadFuncArgs->thread_complete_success = false;
     }
     else
-        threadFuncArgs->sThreadCompleteSuccess = true;
+        threadFuncArgs->thread_complete_success = true;
 
 
     return thread_param;
@@ -53,11 +53,11 @@ bool start_thread_obtaining_mutex(pthread_t *thread, pthread_mutex_t *mutex,int 
      * See implementation details in threading.h file comment block
      */
 
-    struct thread_data* threadParam = (struct thread_data*)malloc(sizeof(struct threadData));
+    struct thread_data* threadParam = (struct thread_data*)malloc(sizeof(struct thread_data));
 
-    threadParam->sMutex = mutex;
-    threadParam->sWaitToObtainMs = wait_to_obtain_ms;
-    threadParam->sWaitToReleaseMs = wait_to_release_ms;
+    threadParam->mutex = mutex;
+    threadParam->wait_to_obtain_ms = wait_to_obtain_ms;
+    threadParam->wait_to_release_ms = wait_to_release_ms;
 
     if ret = pthread_create(thread, NULL, threadFunc, threadParam);
     if (ret != 0)
