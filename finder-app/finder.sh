@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "$#" -ne 2 ]; then
-	echo "Error test: Wrong number of arguments provided."
+	echo "Error: Wrong number of arguments provided."
 	exit 1
 fi
 
