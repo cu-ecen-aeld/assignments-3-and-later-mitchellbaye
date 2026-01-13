@@ -6,7 +6,7 @@ IDIR =../include
 CC:=$(CROSS_COMPILE)gcc
 CFLAGS=-I$(IDIR)
 
-ODIR=
+ODIR= .
 LDIR =../lib
 
 LIBS=-lm
@@ -20,8 +20,10 @@ OBJ = $(_OBJ)
 $(ODIR)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-all: $(OBJ)
+all: writer
+
+writer: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ writer
+	rm -f $(ODIR)/*.o *~ core $(IDIR)/*~ writer
