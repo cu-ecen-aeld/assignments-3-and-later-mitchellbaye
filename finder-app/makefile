@@ -1,6 +1,6 @@
 .PHONY: all clean
 
-CROSS_COMPILE =
+CROSS_COMPILE=
 
 IDIR =../include
 CC:=$(CROSS_COMPILE)gcc
